@@ -298,6 +298,7 @@ int process_ip(struct net_iface *iface, struct ioq_header *ioq, struct ether_hea
 }
 
 void process_pkt(struct net_iface *iface, void* data) {
+  int result;
   volatile char* testp = data;
   struct pkt_buff pkt;
   struct ioq_header *ioq = data;

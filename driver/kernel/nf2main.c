@@ -34,7 +34,7 @@
 #include <linux/timer.h>
 
 #include <asm/uaccess.h>
-#include <asm/semaphore.h>
+#include <linux/semaphore.h>
 
 #include "../common/nf2.h"
 #include "nf2kernel.h"

@@ -20,7 +20,7 @@
 #include <linux/fs.h>
 #include <asm/atomic.h>
 
-#include <asm/semaphore.h>
+#include <linux/semaphore.h>
 #include <linux/kfifo.h>
 #include <linux/list.h>
 

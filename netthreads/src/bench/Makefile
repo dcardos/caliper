@@ -1,4 +1,4 @@
-SUBDIRS := bounce nat perf ping pipe printf udhcp classifier pktgen bugs drifttest
+SUBDIRS := bounce nat perf ping pipe hello
 
 # These targets work on all the Makefiles in the SUBDIRS
 SUBTARGETS := clean embed_clean mif rif embed redo

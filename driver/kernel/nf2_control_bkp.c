@@ -1594,21 +1594,6 @@ static irqreturn_t nf2c_intr(int irq, void *dev_id
     }
 }
 
-
-/* fixing of old network driving api */
-static const struct net_device_ops netAdpNetDevOps =
-{
-    .ndo_open             = nf2c_open,
-    .ndo_stop             = nf2c_release,
-    .ndo_set_config       = nf2c_config,
-    .ndo_start_xmit       = nf2c_tx,      // was hard_start before
-    .ndo_do_ioctl         = nf2c_ioctl,
-    .ndo_get_stats        = nf2c_stats,
-    .ndo_tx_timeout       = nf2c_tx_timeout,
-    .ndo_set_mac_address  = nf2c_set_mac_address,
-};
-
-
 /*
  * The init function (sometimes called probe).
  * It is invoked by register_netdev()
@@ -1619,9 +1604,16 @@ static void nf2c_init(struct net_device *dev)
 
   ether_setup(dev); /* assign some of the fields */
 
-  dev->netdev_ops       = &netAdpNetDevOps; // options above
-  dev->watchdog_timeo   = timeout;
-  dev->mtu              = MTU;
+  dev->open            = nf2c_open;
+  dev->stop            = nf2c_release;
+  dev->set_config      = nf2c_config;
+  dev->hard_start_xmit = nf2c_tx;
+  dev->do_ioctl        = nf2c_ioctl;
+  dev->get_stats       = nf2c_stats;
+  dev->tx_timeout      = nf2c_tx_timeout;
+  dev->watchdog_timeo  = timeout;
+  dev->set_mac_address = nf2c_set_mac_address;
+  dev->mtu             = MTU;
 
   iface = netdev_priv(dev);
   memset(iface, 0, sizeof(struct nf2_iface_priv));
