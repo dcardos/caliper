@@ -1,0 +1,33 @@
+This directory contains NetFPGA bitfiles that are useful with the precise packet generator.
+
+1) netthreads_nooutqueues.bit: This is a modified version of
+netthreads.bit, which is distributed with NetThreads itself. In this
+bitfile, the output queues of the standard NetFPGA pipeline are not
+used. Without the extra buffering of the output queues, the software
+running in NetThreads receives improved feedback of when packets are
+actually transmitted and can control the times between packet
+transmissions more accurately. This is useful in the precise traffic
+generator's use case, but it hasn't been tested with more general
+NetThreads applications. You should think twice about using it with
+anything but the packet generator.
+
+2) measurement_router.bit: This is a modified version of
+router_buffer_sizing.bit which is a part of the standard NF2
+distribution. This version's purpose is to measure the arrival time of
+packets more accurately. In addition to routing packets,
+router_buffer_sizing.bit instruments the output queues and generates
+events recording when packets arrive at the output queues. To better
+use these events to measure when packets arrive at the router itself,
+we have removed most of the logic between the input ports and output
+ports in the normal NetFPGA router pipeline and synthesized
+measurement_router.bit. Specifically, we removed the input arbiter and
+output port lookup modules and hardcoded that packets from port 0 (MAC
+0) will always be sent to output port 2 (MAC 1). Packets that arrive
+at any port beside 0 are ignored. Obviously, this bitfile is useless
+as a router, but it provides more accurate measurements for packets
+arriving at port 0 because there is a smaller, more deterministic
+delay between when packets arrive from the wire and when they are
+enqueued in the output queue.
+
+
+

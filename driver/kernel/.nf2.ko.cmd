@@ -1,0 +1,1 @@
+cmd_/srv/nfnet/NF2/projects/caliper/driver/kernel/nf2.ko := ld -r -m elf_i386  --build-id -o /srv/nfnet/NF2/projects/caliper/driver/kernel/nf2.ko /srv/nfnet/NF2/projects/caliper/driver/kernel/nf2.o /srv/nfnet/NF2/projects/caliper/driver/kernel/nf2.mod.o

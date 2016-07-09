@@ -1,0 +1,64 @@
+This is a simple test for Caliper API. Caliper's API generates UDP packets.
+
+Create the following topology:
+host_A (nf2c0) ------- (nf2c0) host_B (nf2c1) ------- (eth1) host_C
+(Note: host_B and host_C can be the same host)
+
+host_A is the sender, host_B is a router to measure the packet inter-arrival times, and
+host_C is the receiver.
+
+
+
+------ Step 1: Host setups ----------
+on host_B run:
+./host_B.sh
+
+on host_A run:
+./host_A.sh
+
+on host_C run:
+./host_C.sh
+
+
+------ Step 2: Generate traffic ----------
+
+To capture the event packets, on host_B (the router), run:
+pathtocaliper/lib/gulp -i nf2c0 > 1.pcap
+
+on host_A run:
+pathtocaliper/pktgen/pktgen -N -i 10.0.0.2 -I 10.0.0.4 -m MAC_ADDRESS -d 13560 -t 10 -l 1470
+
+Where:
+10.0.0.2 is the IP address of eth1 of host_C (receiver),
+10.0.0.4 is the IP address of nf2c0 of host_A (sender),
+MAC_ADDRESS is the MAC address of eth1 of host_C,
+13560 is the requested packet inter-transmission time in nano seconds,
+10 is the duration of traffic generation,
+1470 is the packet payload size in bytes.
+
+This corresponds to roughly 860 Mbps traffic between host_A and host_C.
+
+
+------ Step 3: Verify packet inter-arrival times  ----------
+
+After the transmission is finished, exit the gulp program on host_C.
+Then on host_B run:
+pathtocaliper/lib/fixed_interval_error.sh 1.pcap 13560
+
+Where:
+1.pcap is the name of the capture file in Step 2.
+13560 is the requested packet inter-transmission time in nano seconds in Step 2.
+
+The output should be a line like:
+mean 13560.00 var 32.59 avgerr 0.36
+Where:
+mean is the measured mean packet inter-transmission times in ns.
+var is the variance of measured packet inter-transmission times compared to the requested packet inter-transmission,
+avgerr is the absolute average error between requested inter-transmission time and the measured packet inter-transmissions.
+
+
+
+To observe the absolute packet inter-transmissions:
+pathtocaliper/lib/rcv_evts2 -o 1.pcap  | egrep '^S ' | pathtocaliper/lib/delta.py -f 1 -q | awk '{print $1*8}'
+to see the exact packet inter-arrival times.
+

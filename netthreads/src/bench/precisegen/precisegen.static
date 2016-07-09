@@ -1,0 +1,41 @@
+                0x0000000004040000                . = 0x4040000
+                0x0000000004040000                . = (ALIGN (0x40000) - ((0x40000 - .) & 0x3ffff))
+                0x0000000004040000                . = (0x40000 DATA_SEGMENT_ALIGN 0x1000)
+                0x0000000004040000                . = ALIGN (0x4)
+                0x0000000004040000                . = (. DATA_SEGMENT_RELRO_END 0x0)
+                0x0000000004040000                _fdata = .
+                0x0000000004040000                . = .
+                0x0000000004047ff0                _gp = (ALIGN (0x10) + 0x7ff0)
+                0x0000000004040000        0x4 support.o
+                0x0000000004040000                header_mem
+                0x000000000404000c                _edata = .
+                0x000000000404000c                __bss_start = .
+                0x000000000404000c                _fbss = .
+                0x000000000404000c        0x4 support.o
+                0x0000000004040010        0x4 precisegen.o
+                0x0000000004040010                quota_pkt
+                0x0000000004040014        0x4 precisegen.o
+                0x0000000004040014                packets_processed
+                0x0000000004040018        0x4 precisegen.o
+                0x0000000004040018                next_pkt_tosend
+                0x000000000404001c        0x4 precisegen.o
+                0x0000000004040020        0x4 precisegen.o
+                0x0000000004040024        0x4 precisegen.o
+                0x0000000004040028        0x4 precisegen.o
+                0x000000000404002c        0x4 precisegen.o
+                0x0000000004040030        0x4 precisegen.o
+                0x0000000004040034                time_lo
+                0x0000000004040038                time_hi
+                0x0000000004040048                pkt_outs
+                0x00000000040401c8                jobs_queue
+                0x00000000040401e4                prepared_pkts
+                0x0000000004040204                pktin_mems
+                0x000000000404027c                send_pkts
+                0x0000000004040294                free_pkts
+                0x00000000040402ac                . = ALIGN (0x4)
+                0x00000000040402ac                . = ALIGN (0x4)
+                0x00000000040402c4                . = ALIGN (0x4)
+                0x00000000040402c4                _end = .
+                0x00000000040402c4                . = DATA_SEGMENT_END (.)
+                0x00000000040ffffc                . = 0x40ffffc
+                0x00000000040ffffc                _sp = ALIGN (0x4)

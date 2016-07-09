@@ -1,0 +1,54 @@
+This is a simple test for Caliper to precisely transmit TCP packets that are generated at Linux kernel using Iperf traffic generator.
+
+
+Create the following topology:
+host_A (nf2c0) ------- (nf2c0) host_B (nf2c1) ------- (eth2) host_C
+host_A (eth1) ------- (eth1) host_C
+
+(Note: host_B and host_C can be the same host)
+
+host_A is the sender, host_B is a router to measure the packet inter-arrival times, and
+host_C is the receiver.
+
+
+
+------ Step 1: Host setups ----------
+on host_B run:
+./host_B.sh
+
+on host_A run:
+./host_A.sh
+
+on host_C run:
+./host_C.sh
+
+Here we make the assumption that the following MAC address are correct:
+Obviously, you need to change them according to your setup.
+
+
+
+------ Step 2: Generate traffic ----------
+
+Start iperf server on host_C by:
+iperf -s -B 10.0.0.3
+
+
+To capture the event packets, on host_B (the router), run:
+pathtocaliper/lib/gulp -i nf2c0 > 1.pcap
+
+
+To start iperf client on host_A run:
+iperf -c 10.0.0.3 -t 100 -B 10.0.0.1 -i 1 -F /dev/zero 
+
+
+To setup packet interarrival time, edit line 641 of:
+pathtocaliper/driver/kernel/nf2_control.c
+with the appropriate rate.
+(double pacing_rate = 950; //Mbps)
+The default rate is 950 Mbps.
+
+
+------ Step 3: Verify packet inter-arrival times  ----------
+
+Same as Step 3 in UDP test.
+

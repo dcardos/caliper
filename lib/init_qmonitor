@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+use NF2::PacketGen;
+use NF2::PacketLib;
+
+use EvtsLib;
+
+use POSIX qw(ceil floor);
+
+use strict;
+use NF2::TestLib;
+
+
+my $queue_mask = 0xff;
+
+if ($#ARGV > 0) {
+    print "usage: init_qmonitor [queue_mask]\n";
+    exit;
+}
+
+if ($#ARGV == 0) {
+    $queue_mask = hex($ARGV[0]);
+}
+
+my $hex = sprintf("0x%X", $queue_mask);  
+print 'Using queue mask '.$hex . "\n";
+
+my @interfaces = ("nf2c0", "nf2c1", "nf2c2", "nf2c3", "eth1", "eth2");
+nftest_init(\@ARGV,\@interfaces,);
+#nftest_start(\@interfaces);
+
+
+# set the event capturing registers
+my $batch = 0;
+my $evts_ethertype = 0x9999;
+
+#nftest_regwrite("nf2c0", EVT_CAP_DST_MAC_HI_REG(), 0x0000dddd);
+#nftest_regwrite("nf2c0", EVT_CAP_DST_MAC_LO_REG(), 0xdddddddd);
+
+nftest_regwrite("nf2c0", EVT_CAP_DST_MAC_HI_REG(), 0x0000004E);
+nftest_regwrite("nf2c0", EVT_CAP_DST_MAC_LO_REG(), 0x46324300);
+
+nftest_regwrite("nf2c0", EVT_CAP_SRC_MAC_HI_REG(), 0x00005555);
+nftest_regwrite("nf2c0", EVT_CAP_SRC_MAC_LO_REG(), 0x55555555);
+nftest_regwrite("nf2c0", EVT_CAP_ETHERTYPE_REG(), $evts_ethertype);
+nftest_regwrite("nf2c0", EVT_CAP_IP_DST_REG(), 0xabcd1234);
+nftest_regwrite("nf2c0", EVT_CAP_IP_SRC_REG(), 0x567890ef);
+nftest_regwrite("nf2c0", EVT_CAP_UDP_SRC_PORT_REG(), 9876);
+nftest_regwrite("nf2c0", EVT_CAP_UDP_DST_PORT_REG(), 9999);
+my $evt_out_port = 1;
+nftest_regwrite("nf2c0", EVT_CAP_OUTPUT_PORTS_REG(), 2);
+nftest_regwrite("nf2c0", EVT_CAP_MONITOR_MASK_REG(), 0x7);    # events mask
+nftest_regwrite("nf2c0", EVT_CAP_SIGNAL_ID_MASK_REG(), $queue_mask); # queue mask
+nftest_regwrite("nf2c0", EVT_CAP_ENABLE_CAPTURE_REG(), 1);
+
+

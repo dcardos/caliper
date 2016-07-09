@@ -1,0 +1,2 @@
+0x69942863	nf2k_reg_write	/srv/nfnet/NF2/projects/caliper/driver/kernel/nf2	EXPORT_SYMBOL
+0xd17cb920	nf2k_reg_read	/srv/nfnet/NF2/projects/caliper/driver/kernel/nf2	EXPORT_SYMBOL
